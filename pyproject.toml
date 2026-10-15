@@ -1,0 +1,23 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Romeu Borges", email = "romeuborges19@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "agno>=3.1.1",
+    "fastapi[standard]>=0.143.0",
+    "lmnr>=0.7.66",
+    "openai>=3.26.1",
+    "sqlalchemy[asyncio]>=2.1.4",
+]
+
+[project.scripts]
+backend = "backend:main"
+
+[build-system]
+requires = ["uv_build>=0.12.15,<0.13.0"]
+build-backend = "uv_build"
