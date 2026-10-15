@@ -9,9 +9,12 @@ authors = [
 requires-python = ">=3.14"
 dependencies = [
     "agno>=3.1.1",
+    "alembic>=1.20.0",
     "fastapi[standard]>=0.143.0",
     "lmnr>=0.7.66",
     "openai>=3.26.1",
+    "psycopg2-binary>=2.9.13",
+    "pydantic-settings>=2.15.0",
     "sqlalchemy[asyncio]>=2.1.4",
 ]
 
