@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session as DBSession
 from backend.api.schemas import (
     CarCreate,
     CarSchema,
-    SessionCreate,
+    CarWithSession,
+    SessionPreviewSchema,
     SessionSchema,
     SessionWithMessages,
     UserSchema,
@@ -15,9 +16,19 @@ class CarService:
     def __init__(self, db: DBSession):
         self.db = db
 
-    def get_cars(self) -> list[CarSchema]:
+    def get_cars(self) -> list[CarWithSession]:
         cars = Car.get_cars(self.db)
-        return [CarSchema.model_validate(c) for c in cars]
+        return [
+            CarWithSession(
+                id=c.id,
+                name=c.name,
+                description=c.description,
+                session=SessionPreviewSchema.model_validate(c.sessions[0])
+                if c.sessions
+                else None,
+            )
+            for c in cars
+        ]
 
     def create_car(self, new_car: CarCreate) -> CarSchema:
         car_obj = Car(name=new_car.name, description=new_car.description)

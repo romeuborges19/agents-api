@@ -72,5 +72,4 @@ async def create_message(
 ):
     service = AIQueryService(db=db, car_id=car_id)
 
-    response = service.query(current_user, input.input)
-    return {"response": response}
+    return service.query(current_user, input.input)

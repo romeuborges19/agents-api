@@ -40,6 +40,13 @@ class SessionSchema(BaseModel):
     car: CarSchema
 
 
+class SessionPreviewSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    subject: str
+
+
 class MessageSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -76,3 +83,12 @@ class CarSchema(BaseModel):
     id: int
     name: str
     description: str
+
+
+class CarWithSession(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    description: str
+    session: SessionPreviewSchema | None

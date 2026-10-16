@@ -30,6 +30,6 @@ class AIQueryService:
         self._create_message(user_id=user.id, session=self.session, content=input)
         response = self.agent.query(input, user.id, self.session.id)
 
-        self._create_message(content=response, session=self.session)
+        self._create_message(content=response.response, session=self.session)
         self.db.commit()
         return response

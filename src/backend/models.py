@@ -89,8 +89,8 @@ class Car(Base):
     sessions: Mapped[List["Session"]] = relationship(back_populates="car")
 
     @staticmethod
-    def get_cars(db):
-        stmt = select(Car)
+    def get_cars(db) -> list[Car]:
+        stmt = select(Car).options(selectinload(Car.sessions))
         return db.scalars(stmt).all()
 
     @staticmethod
