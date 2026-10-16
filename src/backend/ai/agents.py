@@ -6,6 +6,9 @@ from agno.models.openai import OpenAIResponses
 from agno.tools import tool
 from lmnr import Laminar
 
+from backend.database import get_db
+from backend.services.models import CarService
+
 db = SqliteDb(db_file="tmp/agents.db")
 
 Laminar.initialize()
@@ -15,6 +18,13 @@ Laminar.initialize()
 def retrieve_datetime():
     """Retorna a data e hora atual"""
     return datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+
+
+@tool
+def retrieve_cars():
+    """Retorna os carros existentes na base de dados"""
+    db = get_db()
+    return CarService(db=db).get_cars()
 
 
 class PersonalAgent:

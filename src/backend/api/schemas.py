@@ -30,3 +30,29 @@ class UserInDB(UserSchema):
 class UserCreate(BaseModel):
     name: str
     password: str
+
+
+class SessionSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    subject: str
+    car: CarSchema
+
+
+class SessionCreate(BaseModel):
+    subject: str
+    car_id: int
+
+
+class CarCreate(BaseModel):
+    name: str
+    description: str
+
+
+class CarSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    description: str
