@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from lmnr import evaluate
 from lmnr.sdk.types import Datapoint
 
-from backend.agents import personal_agent
+from backend.ai.agents import personal_agent
 
 load_dotenv()
 
