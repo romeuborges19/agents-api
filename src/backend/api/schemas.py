@@ -40,12 +40,32 @@ class SessionSchema(BaseModel):
     car: CarSchema
 
 
+class MessageSchema(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    content: str
+    user: UserSchema | None
+
+
+class SessionWithMessages(SessionSchema):
+    model_config = ConfigDict(from_attributes=True)
+
+    messages: list[MessageSchema]
+
+
 class SessionCreate(BaseModel):
-    subject: str
     car_id: int
 
 
 class CarCreate(BaseModel):
+    name: str
+    description: str
+
+
+class CarDescription(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     name: str
     description: str
 

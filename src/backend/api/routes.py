@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from backend.ai.agents import personal_agent
 from backend.api.auth import get_current_active_user
 from backend.api.schemas import AgentInput, CarCreate, SessionCreate, UserSchema
 from backend.database import get_db
@@ -44,24 +43,34 @@ async def get_sessions(
     return service.get_sessions(current_user)
 
 
-@router.post("/sessions")
+@router.post("/cars/{car_id}/sessions")
 async def create_session(
-    new_session: SessionCreate,
+    car_id: int,
     db: Annotated[Session, Depends(get_db)],
     current_user: Annotated[UserSchema, Depends(get_current_active_user)],
 ):
     service = SessionService(db=db)
-    return service.create_session(current_user, new_session)
+    return service.create_session(current_user, car_id)
 
 
-@router.post("/sessions/{session_id}/messages")
-async def root(
-    input: AgentInput,
-    session_id: str,
+@router.get("/cars/{car_id}/messages")
+async def retrieve_messages(
+    car_id: int,
     db: Annotated[Session, Depends(get_db)],
     current_user: Annotated[UserSchema, Depends(get_current_active_user)],
 ):
-    service = AIQueryService(db=db, agent=personal_agent)
+    service = SessionService(db=db)
+    return service.retrieve_messages(car_id)
 
-    response = service.query(current_user, session_id, input.input)
+
+@router.post("/cars/{car_id}/messages")
+async def create_message(
+    input: AgentInput,
+    car_id: int,
+    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[UserSchema, Depends(get_current_active_user)],
+):
+    service = AIQueryService(db=db, car_id=car_id)
+
+    response = service.query(current_user, input.input)
     return {"response": response}

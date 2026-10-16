@@ -5,6 +5,7 @@ from backend.api.schemas import (
     CarSchema,
     SessionCreate,
     SessionSchema,
+    SessionWithMessages,
     UserSchema,
 )
 from backend.models import Car, Session
@@ -33,13 +34,19 @@ class SessionService:
         sessions = Session.get_sessions(self.db, user)
         return [SessionSchema.model_validate(s) for s in sessions]
 
-    def create_session(
-        self, user: UserSchema, new_session: SessionCreate
-    ) -> SessionSchema:
-        car = Car.get_by_id(self.db, new_session.car_id)
-        session_obj = Session(
-            subject=new_session.subject, car_id=car.id, user_id=user.id
-        )
+    def create_session(self, user: UserSchema, car_id: int) -> SessionSchema:
+        car = Car.get_by_id(self.db, car_id)
+
+        if car.sessions:
+            return SessionSchema.model_validate(car.sessions[0])
+
+        session_obj = Session(subject=car.name, car_id=car.id, user_id=user.id)
         self.db.add(session_obj)
+
         self.db.commit()
+
         return SessionSchema.model_validate(session_obj)
+
+    def retrieve_messages(self, car_id: int):
+        session = Session.get_with_messages(self.db, car_id)
+        return SessionWithMessages.model_validate(session)
