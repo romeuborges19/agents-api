@@ -1,16 +1,12 @@
-import datetime
-
 from agno.agent import Agent
 from agno.db.sqlite import SqliteDb
 from agno.models.openai import OpenAIResponses
 from agno.run import RunContext
-from agno.tools import tool
 from lmnr import Laminar
 from pydantic import BaseModel, Field
 
-from backend.api.schemas import CarSchema, CarWithSession
-from backend.database import session_factory
-from backend.services.models import CarService
+from backend.chat.ai.tools import retrieve_cars, retrieve_datetime
+from backend.chat.schemas import CarWithSession
 
 db = SqliteDb(db_file="tmp/agents.db")
 
@@ -22,22 +18,6 @@ class CarAgentResponse(BaseModel):
     next_car: CarWithSession | None = Field(
         description="The car for the next subject. None if there's no subject change."
     )
-
-
-@tool
-def retrieve_datetime():
-    """Retorna a data e hora atual"""
-    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-
-
-@tool
-def retrieve_cars():
-    """Retorna os carros existentes na base de dados e se já existe uma sessão vinculada a eles."""
-    db = session_factory()
-    cars = CarService(db=db).get_cars()
-    cars = [c.model_dump() for c in cars]
-    db.close()
-    return cars
 
 
 def get_instructions(run_context: RunContext):

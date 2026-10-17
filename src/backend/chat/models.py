@@ -3,7 +3,6 @@ from typing import List
 
 from sqlalchemy import DateTime, ForeignKey, Integer, func, select
 from sqlalchemy.orm import (
-    DeclarativeBase,
     Mapped,
     mapped_column,
     relationship,
@@ -11,20 +10,8 @@ from sqlalchemy.orm import (
 )
 from sqlalchemy.orm import Session as DBSession
 
-
-class Base(DeclarativeBase):
-    pass
-
-
-class User(Base):
-    __tablename__ = "users"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    name: Mapped[str]
-    hashed_password: Mapped[str]
-
-    sessions: Mapped[List["Session"]] = relationship(back_populates="user")
-    messages: Mapped[List["Message"]] = relationship(back_populates="user")
+from backend.auth.models import User
+from backend.core.database import Base
 
 
 class Session(Base):
