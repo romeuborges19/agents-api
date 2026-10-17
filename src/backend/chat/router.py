@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from backend.auth.dependencies import get_current_active_user
 from backend.chat import service
-from backend.chat.ai.agent import PersonalAgent
+from backend.chat.ai import service as ai_service
 from backend.chat.schemas import AgentInput, CarCreate, UserSchema
 from backend.core.database import get_db
 
@@ -65,6 +65,4 @@ async def create_message(
     db: Annotated[Session, Depends(get_db)],
     current_user: Annotated[UserSchema, Depends(get_current_active_user)],
 ):
-    session = service.retrieve_messages(db, car_id)
-    agent = PersonalAgent(session_state={"car": session.car.model_dump()})
-    return agent.query(input.input, current_user.id, session.id)
+    return ai_service.query(db, current_user, car_id, input.input)
